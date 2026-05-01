@@ -1,0 +1,192 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "Stores user basic information and role",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "role": { "type": "string", "enum": ["user", "admin", "owner"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "role"]
+    },
+    "Appointment": {
+      "title": "Appointment",
+      "description": "Booking details for dental services",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "userEmail": { "type": "string" },
+        "serviceId": { "type": "string" },
+        "serviceTitle": { "type": "string" },
+        "price": { "type": "number" },
+        "dentistId": { "type": "string" },
+        "dentistName": { "type": "string" },
+        "day": { "type": "string" },
+        "date": { "type": "string", "format": "date" },
+        "time": { "type": "string" },
+        "patientName": { "type": "string" },
+        "patientPhone": { "type": "string" },
+        "notes": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected", "cancelled"] },
+        "cancellationReason": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "serviceId", "day", "time", "patientName", "patientPhone", "status"]
+    },
+    "Inquiry": {
+      "title": "Inquiry",
+      "description": "User consultation questions",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "userEmail": { "type": "string" },
+        "message": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "response": { "type": "string" },
+        "respondedAt": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "message", "createdAt"]
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "In-app notifications for users",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "message": { "type": "string" },
+        "type": { "type": "string", "enum": ["appointment", "inquiry", "system"] },
+        "read": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "title", "message", "type", "read", "createdAt"]
+    },
+    "Service": {
+      "title": "Service",
+      "description": "Offered dental treatments",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "features": { "type": "array", "items": { "type": "string" } },
+        "price": { "type": "number" },
+        "order": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "description", "price"]
+    },
+    "Dentist": {
+      "title": "Dentist",
+      "description": "Clinic doctors",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "specialization": { "type": "string" },
+        "experience": { "type": "string" },
+        "photo": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "specialization", "experience", "photo"]
+    },
+    "OffDay": {
+      "title": "Off Day",
+      "description": "Clinic holidays or closed days",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "day": { "type": "string" },
+        "reason": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["day"]
+    },
+    "ClinicSettings": {
+      "title": "Clinic Settings",
+      "description": "Global clinic configurations",
+      "type": "object",
+      "properties": {
+        "address": { "type": "string" },
+        "workingHours": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "start": { "type": "string" },
+              "end": { "type": "string" },
+              "closed": { "type": "boolean" }
+            }
+          }
+        },
+        "templates": {
+          "type": "object",
+          "properties": {
+            "appointmentConfirmed": { "type": "string" },
+            "appointmentPostponed": { "type": "string" },
+            "appointmentCancelled": { "type": "string" },
+            "inquiryResponded": { "type": "string" }
+          }
+        }
+      }
+    },
+    "AdminRecord": {
+      "title": "Admin Record",
+      "description": "Trusted admin role registry",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "owner"] },
+        "addedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["email", "role"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": "UserProfile",
+      "description": "User profiles and roles"
+    },
+    "appointments/{appointmentId}": {
+      "schema": "Appointment",
+      "description": "Clinic bookings"
+    },
+    "inquiries/{inquiryId}": {
+      "schema": "Inquiry",
+      "description": "Consultation messages"
+    },
+    "notifications/{notificationId}": {
+      "schema": "Notification",
+      "description": "In-app notifications"
+    },
+    "services/{serviceId}": {
+      "schema": "Service",
+      "description": "Treatment catalog"
+    },
+    "dentists/{dentistId}": {
+      "schema": "Dentist",
+      "description": "Doctors profiles"
+    },
+    "offDays/{offDayId}": {
+      "schema": "OffDay",
+      "description": "Clinic availability schedule"
+    },
+    "settings/clinic": {
+      "schema": "ClinicSettings",
+      "description": "Clinic global settings"
+    },
+    "admins/{userId}": {
+      "schema": "AdminRecord",
+      "description": "List of authorized administrators"
+    }
+  }
+}
